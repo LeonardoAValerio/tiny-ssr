@@ -1,20 +1,30 @@
 {
-  "name": "ssr",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "@leonardoavalerio/tiny-ssr",
+  "version": "1.0.2",
   "scripts": {
     "start": "npx tsc && node ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "exports": {
+    "./lib/server/*": {
+      "import": "./dist/lib/server/*.js",
+      "types": "./dist/lib/server/*.d.ts"
+    },
+    "./lib/structure-components/*": {
+      "import": "./dist/lib/structure-components/*.js",
+      "types": "./dist/lib/structure-components/*.d.ts"
+    }
+  },
   "keywords": [],
-  "author": "",
+  "author": "LeonardoValerio",
   "license": "ISC",
   "description": "",
   "type": "module",
-  "dependencies": {
+  "devDependencies": {
+    "@types/node": "^24.3.0",
     "typescript": "^5.9.2"
   },
-  "devDependencies": {
-    "@types/node": "^24.3.0"
-  }
+  "files": [
+    "/dist/lib"
+  ]
 }

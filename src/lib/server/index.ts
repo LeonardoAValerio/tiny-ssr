@@ -29,7 +29,7 @@ export class SSRServer implements SSRServerConfig {
             }
 
             const path = splitetedUrl.join('/').concat('.js');
-            return resolve('./', 'dist', 'app', path)
+            return resolve(this.pagesDir, path)
         }
     }
 
@@ -39,25 +39,26 @@ export class SSRServer implements SSRServerConfig {
             try {
                 const path = this._factoryPath(req.url!);
                 if (path) {
-                    console.log(this._factoryPath(req.url!));
                     let file;
-                    if(path.includes('.ico')) {
-                        file = readFileSync(path);
+                    if(path.includes('/public')) {
+                        try {
+                            file = readFileSync(path);
+                        } catch(e) {
+                            console.log(`[ERROR] Unkown public file ${e}`)
+                            }
                     }else {
                         const module = await import(path);
-                        file = (module.default.page) as Page;
+                        file = (module.default) as Page;
                         file = file.build();
-                        console.log(file)
                     }
-
-                    
+                    console.log(`[INFO] Access route ${path}`);
                     res.end(file)
                 }
             } catch(e) {
-                console.log(e)
+                console.log(`[ERROR] Unkown route redirect to ${this.pagesDir}/404.ts`);
                 const path = this._factoryPath('/404')!;
                 const module = await import(path);
-                const file = (module.default.page) as Page;
+                const file = (module.default) as Page;
                 res.end(file.build())
             }
         });

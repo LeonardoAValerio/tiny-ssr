@@ -1,23 +1,8 @@
 import { Page } from "../lib/structure-components/page.js";
-import { Widget } from "../lib/structure-components/widget.js";
 
-const page = new Page({
-    title: 'Home',
+export default new Page({
+    title: 'Oi',
     children: [
-        new Widget({
-            element: 'div',
-            children: [
-                new Widget({
-                    element: "h1",
-                    children: ["Home"]
-                }),
-                new Widget({
-                    element: "p",
-                    children: ["Teste"]
-                })
-            ]
-        })
+        "Texto"
     ]
-});
-
-export default { page };
+})

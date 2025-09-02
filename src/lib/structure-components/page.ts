@@ -2,17 +2,19 @@ import { Widget, WidgetContent } from "./widget.js"
 
 export interface PageConfig {
     title: string
-    layout?: any
     children: WidgetContent[]
+    headers?: WidgetContent[] | undefined
 }
 
 export class Page implements PageConfig {
+    headers?: WidgetContent[] | undefined
     children: WidgetContent[]
     title: string
 
     constructor(config: PageConfig) {
         this.title = config.title;
         this.children = config.children;
+        this.headers = config.headers;
     }
     
     build(): string {
@@ -26,7 +28,8 @@ export class Page implements PageConfig {
                 new Widget({
                     element: 'title',
                     children: [this.title]
-                })
+                }),
+                ...this.headers ?? []
             ]
         });
 
@@ -34,9 +37,6 @@ export class Page implements PageConfig {
             element: 'body',
             children: this.children
         });
-
-        console.log(head.build());
-        console.log(body.build());
 
         const html = new Widget({
             element: 'html',
