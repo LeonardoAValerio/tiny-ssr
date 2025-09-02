@@ -1,6 +1,8 @@
 import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
 import { SSRServerConfig } from './config.js';
+import { Page } from '../structure-components/page.js';
+import { resolve } from 'node:path';
 
 export class SSRServer implements SSRServerConfig {
     port: number;
@@ -9,7 +11,7 @@ export class SSRServer implements SSRServerConfig {
 
     constructor(configs?: Partial<SSRServerConfig>) {
         this.port = configs?.port ?? 8000;
-        this.pagesDir = configs?.pagesDir ?? "./src/app";
+        this.pagesDir = configs?.pagesDir ?? "./dist/app";
         this.publicDir = configs?.publicDir ?? "./public";
     }
 
@@ -23,16 +25,17 @@ export class SSRServer implements SSRServerConfig {
             splitetedUrl.shift();
 
             if(splitetedUrl[splitetedUrl.length-1] === '') {
-                splitetedUrl[splitetedUrl.length-1] = '/index'
+                splitetedUrl[splitetedUrl.length-1] = 'index'
             }
 
-            return this.pagesDir + splitetedUrl.join('/').concat('.html');
+            const path = splitetedUrl.join('/').concat('.js');
+            return resolve('./', 'dist', 'app', path)
         }
     }
 
 
     init() {
-        const server = createServer((req, res) => {
+        const server = createServer(async (req, res) => {
             try {
                 const path = this._factoryPath(req.url!);
                 if (path) {
@@ -41,14 +44,21 @@ export class SSRServer implements SSRServerConfig {
                     if(path.includes('.ico')) {
                         file = readFileSync(path);
                     }else {
-                        file = readFileSync(path, { encoding: "utf-8" });
+                        const module = await import(path);
+                        file = (module.default.page) as Page;
+                        file = file.build();
+                        console.log(file)
                     }
+
                     
                     res.end(file)
                 }
             } catch(e) {
-                const file = readFileSync("./src/app/404.html", { encoding: "utf-8" });
-                res.end(file)
+                console.log(e)
+                const path = this._factoryPath('/404')!;
+                const module = await import(path);
+                const file = (module.default.page) as Page;
+                res.end(file.build())
             }
         });
 

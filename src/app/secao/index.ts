@@ -1,5 +1,5 @@
-import { Page } from "../lib/structure-components/page.js";
-import { Widget } from "../lib/structure-components/widget.js";
+import { Page } from "../../lib/structure-components/page.js";
+import { Widget } from "../../lib/structure-components/widget.js";
 
 const page = new Page({
     title: 'Home',
@@ -9,11 +9,12 @@ const page = new Page({
             children: [
                 new Widget({
                     element: "h1",
-                    children: ["Home"]
+                    children: ["Seção"]
                 }),
                 new Widget({
-                    element: "p",
-                    children: ["Teste"]
+                    element: "a",
+                    attributes: { "href": "/" },
+                    children: ["Vá para Home"]
                 })
             ]
         })
