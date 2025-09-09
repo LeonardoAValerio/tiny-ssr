@@ -98,7 +98,7 @@ export class SSRServer implements SSRServerConfig {
         }
       } catch (e) {
         console.log(
-          `[ERROR] Unknown route, redirecting to ${this.pagesDir}/404.ts`
+          `[ERROR] ${e}\nredirecting to ${this.pagesDir}/404.ts`
         );
         const path = this._factoryPath("/404")!;
         const module = await import(path);

@@ -1,3 +1,5 @@
+import { parseCss } from "../utils/parseCss.js";
+
 /**
  * `WidgetContent` type defines the possible content of a Widget.
  * It can be either a string (plain text) or another Widget instance.
@@ -12,6 +14,11 @@ export interface WidgetProps {
      * The HTML tag name of the element (e.g., 'div', 'span', 'button').
      */
     element: keyof HTMLElementTagNameMap;
+
+    /**
+    * The name of the element for the compiler.
+    */
+    name?: string | undefined;
 
     /**
      * Optional attributes to set on the element, provided as key-value pairs.
@@ -48,11 +55,12 @@ export interface WidgetProps {
  */
 export class Widget implements WidgetProps {
     element: keyof HTMLElementTagNameMap;
-    class: string[] | undefined;
     children: WidgetContent[] | undefined;
     id: string | undefined;
     style: Partial<CSSStyleDeclaration> | undefined;
     attributes: Record<string, string> | undefined;
+    private _name: string;
+    private _class: string[] | undefined;
 
     /**
      * Creates a new Widget instance.
@@ -60,44 +68,65 @@ export class Widget implements WidgetProps {
      */
     constructor(props: WidgetProps) {
         this.element = props.element;
-        this.class = props.class;
+        this._name = props.name;
+        this._class = props.class ?? [];
         this.children = props.children;
         this.id = props.id;
         this.attributes = props.attributes;
         this.style = props.style;
     }
 
+    get class(): string[] {
+        if(this._name) {
+            return [this._name, ...this._class];
+        }else {
+            return this._class;
+        }
+    }
+
+    get name(): string {
+        return this._name || `${this.element}-${Date.now().toString()}`;
+    }
+
     /**
      * Builds the HTML string for this Widget, including its children recursively.
      * @returns A string containing the HTML markup of this widget.
      */
-    build(): string {
-        let element = `<${this.element} `;
+    buildHtml(): string {
+        try {
+            let element = `<${this.element} `;
 
-        if (this.class)
-            element += `class="${this.class.join(' ')}" `;
+            if (this.class.length > 0)
+                element += `class="${this.class.join(' ')}" `;
 
-        if (this.id)
-            element += `id="${this.id}" `;
+            if (this.id)
+                element += `id="${this.id}" `;
 
-        if (this.attributes)
-            Object.keys(this.attributes).forEach((key) => {
-                if (this.attributes)
-                    element += `${key}="${this.attributes[key]}" `;
-            });
+            if (this.attributes)
+                Object.keys(this.attributes).forEach((key) => {
+                    if (this.attributes)
+                        element += `${key}="${this.attributes[key]}" `;
+                });
 
-        element += `>`;
+            element += `>`;
 
-        if (this.children)
-            this.children.forEach((child) => {
-                if (typeof child === 'string')
-                    element += child;
-                else
-                    element += child.build();
-            });
+            if (this.children)
+                this.children.forEach((child) => {
+                    if (typeof child === 'string')
+                        element += child;
+                    else
+                        element += child.buildHtml();
+                });
 
-        element += `</${this.element}>`;
+            element += `</${this.element}>`;
 
-        return element;
+            return element;
+        } catch(e) {
+            return "";
+        }
+    }
+
+    buildCss(): string {
+        return this.style ? parseCss(this.style) : "";
     }
 }

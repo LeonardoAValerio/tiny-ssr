@@ -50,6 +50,21 @@ export class Page implements PageConfig {
      * @returns A string containing the complete HTML page.
      */
     build(): string {
+        const styles = this.children.reduce<string>((style, cur) => {
+            if(typeof cur === "string") {
+                const result = style ?? "" + ""
+                return style + "";
+            }else {
+                if(!style.includes(cur.name)) {
+                    const result = style + `.${cur.name}{${cur.buildCss()}}`;
+                    return result; 
+                }
+                return style;
+            }
+        }, "") ?? ""
+
+        console.log(styles)
+
         const head = new Widget({
             element: 'head',
             children: [
@@ -61,25 +76,30 @@ export class Page implements PageConfig {
                     element: 'title',
                     children: [this.title]
                 }),
+                new Widget({
+                    element: 'style',
+                    children: [styles]
+                }),
                 ...this.headers ?? []
             ]
         });
 
         const body = new Widget({
             element: 'body',
-            children: this.children
+            children: [...this.children]
         });
 
         const html = new Widget({
+            name: "html",
             element: 'html',
             children: [
                 head,
                 body
             ]
-        }).build();
+        });
 
         let page = `<!DOCTYPE html>`;
-        page += html;
+        page += html.buildHtml();
 
         return page;
     }
