@@ -59,7 +59,7 @@ export class Widget implements WidgetProps {
     id: string | undefined;
     style: Partial<CSSStyleDeclaration> | undefined;
     attributes: Record<string, string> | undefined;
-    private _name: string;
+    name: string;
     private _class: string[] | undefined;
 
     /**
@@ -68,7 +68,7 @@ export class Widget implements WidgetProps {
      */
     constructor(props: WidgetProps) {
         this.element = props.element;
-        this._name = props.name;
+        this.name = props.name || `${this.element}-${Date.now().toString()}`;
         this._class = props.class ?? [];
         this.children = props.children;
         this.id = props.id;
@@ -77,15 +77,11 @@ export class Widget implements WidgetProps {
     }
 
     get class(): string[] {
-        if(this._name) {
-            return [this._name, ...this._class];
+        if(this.style) {
+            return [this.name, ...this._class];
         }else {
             return this._class;
         }
-    }
-
-    get name(): string {
-        return this._name || `${this.element}-${Date.now().toString()}`;
     }
 
     /**

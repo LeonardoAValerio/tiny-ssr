@@ -56,7 +56,7 @@ export class Page implements PageConfig {
                 return style + "";
             }else {
                 if(!style.includes(cur.name)) {
-                    const result = style + `.${cur.name}{${cur.buildCss()}}`;
+                    const result = style + cur.buildCss();
                     return result; 
                 }
                 return style;
