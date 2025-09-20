@@ -50,18 +50,7 @@ export class Page implements PageConfig {
      * @returns A string containing the complete HTML page.
      */
     build(): string {
-        const styles = this.children.reduce<string>((style, cur) => {
-            if(typeof cur === "string") {
-                const result = style ?? "" + ""
-                return style + "";
-            }else {
-                if(!style.includes(cur.name)) {
-                    const result = style + cur.buildCss();
-                    return result; 
-                }
-                return style;
-            }
-        }, "") ?? ""
+        const styles = this.buildFullCss();
 
         console.log(styles)
 
@@ -102,5 +91,26 @@ export class Page implements PageConfig {
         page += html.buildHtml();
 
         return page;
+    }
+
+    getAllWidgetElements() {
+        const allElements = this.children.reduce<WidgetContent[]>((pre, child) => {
+            if(typeof child !== "string") {
+                pre.push(...child.flattenAllElements());
+            }
+            return pre;
+        }, []);
+
+        return allElements.filter((el) => typeof el !== "string");
+    }
+
+    buildFullCss() {
+        const setStyles = new Set<String>;
+
+        this.getAllWidgetElements().forEach((widget) => {
+            setStyles.add(widget.buildCss());
+        });
+
+        return Array.from(setStyles.values()).join("");
     }
 }

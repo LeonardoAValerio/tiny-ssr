@@ -68,7 +68,7 @@ export class Widget implements WidgetProps {
      */
     constructor(props: WidgetProps) {
         this.element = props.element;
-        this.name = props.name || `${this.element}-${Date.now().toString()}`;
+        this.name = props.name || `${this.element}-${(Math.random() * Date.now()).toFixed(0)}`;
         this._class = props.class ?? [];
         this.children = props.children;
         this.id = props.id;
@@ -118,11 +118,25 @@ export class Widget implements WidgetProps {
 
             return element;
         } catch(e) {
+            console.error(`ERROR: building HTML on Element ${this.name}:`, e)
             return "";
         }
     }
 
     buildCss(): string {
-        return this.style ? parseCss(this.style) : "";
+        return this.style ? `.${this.name}{${parseCss(this.style)}}` : "";
     }
+
+    flattenAllElements() {
+        const children = this.children?.reduce<Array<WidgetContent>>((pre, child) => {
+            if(typeof child === "string") {
+                pre.push(child)
+            }else {
+                pre.push(...child.flattenAllElements())
+            }
+            return pre;
+        }, []) ?? [];
+
+        return [this, ...children];
+    } 
 }

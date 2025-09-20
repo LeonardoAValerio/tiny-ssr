@@ -1,4 +1,4 @@
 /dist
 /node_modules
-/src/app
-/src/components
+src/app
+src/components
