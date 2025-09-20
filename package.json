@@ -31,5 +31,5 @@
     "type": "git",
     "url": "git+https://github.com/LeonardoAValerio/tiny-ssr.git"
   },
-  "homepage": "git+https://github.com/LeonardoAValerio/tiny-ssr.git"
+  "homepage": "git+https://github.com/LeonardoAValerio/tiny-ssr.git#readme"
 }
