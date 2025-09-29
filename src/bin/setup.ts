@@ -17,8 +17,6 @@ function writeFile(filepath, content) {
 
 run("npm install --save-dev typescript ts-node nodemon @types/node");
 
-run("npx tsc --init");
-
 ["src", "public", "src/app", "src/components"].forEach((dir) => {
   fs.mkdirSync(dir, { recursive: true });
 });
@@ -29,6 +27,32 @@ writeFile(
   `/node_modules
 /dist
 .env
+`
+);
+
+writeFile(
+  "./tsconfig.json",
+  `{
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "module": "nodenext",
+    "target": "esnext",
+    "types": [],
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "strict": true,
+    "jsx": "react-jsx",
+    "verbatimModuleSyntax": false,
+    "isolatedModules": true,
+    "noUncheckedSideEffectImports": true,
+    "moduleDetection": "force",
+    "skipLibCheck": true,
+  }
+}
 `
 );
 
@@ -131,6 +155,7 @@ const pkgPath = "./package.json";
 const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
 pkg.scripts = pkg.scripts || {};
 pkg.scripts.start = "npx tsc && node ./dist/index.js";
+pkg.type = "module"
 fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
 
 console.log("✅ Setup concluído!");
