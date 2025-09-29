@@ -1,4 +1,6 @@
 /dist
 /node_modules
+/public
 src/app
 src/components
+src/index.ts

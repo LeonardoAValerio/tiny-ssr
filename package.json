@@ -5,6 +5,9 @@
     "start": "npx tsc && node ./dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "bin": {
+    "setup": "./dist/bin/setup.js"
+  },
   "exports": {
     "./lib/server/*": {
       "import": "./dist/lib/server/*.js",
