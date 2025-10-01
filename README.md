@@ -22,7 +22,17 @@ This framework provides:
 ## Installation
 
 ```bash
-npm install tiny-ssr
+npm install @leonardoavalerio/tiny-ssr
+```
+
+---
+
+## Setup
+
+After installing, you can run the following command to generate the default project configuration:
+
+```bash
+npx create-tiny-ssr
 ```
 
 ---
@@ -32,8 +42,8 @@ npm install tiny-ssr
 1. Create a Page
 Import the `Widget` and `Page` classes, and define the page structure:
 ```ts
-import { Widget } from 'lightweight-ssr/structure-components/widget.js';
-import { Page } from 'lightweight-ssr/structure-components/page.js';
+import { Widget } from '@leonardoavalerio/tiny-ssr/lib/structure-components/widget';
+import { Page } from '@leonardoavalerio/tiny-ssr/lib/structure-components/page';
 
 export default new Page({
   title: 'My First Page',
@@ -61,7 +71,7 @@ export default new Page({
 2. Start the SSR Server
 Import `SSRServer` and configure it:
 ```ts
-import { SSRServer } from 'lightweight-ssr/server/ssr-server.js';
+import { SSRServer } from "@leonardoavalerio/tiny-ssr/lib/server/index";
 
 const server = new SSRServer({
   port: 3000,

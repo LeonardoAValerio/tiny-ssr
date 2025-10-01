@@ -171,4 +171,4 @@ pkg.type = "module"
 fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
 
 console.log("Setup finished!");
-console.log("Setup finished!");
+console.log("Run `npm run dev`");
