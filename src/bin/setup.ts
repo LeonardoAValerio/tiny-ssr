@@ -12,7 +12,7 @@ function run(cmd) {
 function writeFile(filepath, content) {
   fs.mkdirSync(path.dirname(filepath), { recursive: true });
   fs.writeFileSync(filepath, content);
-  console.log(`📄 Criado: ${filepath}`);
+  console.log(`File created: ${filepath}`);
 }
 
 run("npm install --save-dev typescript ts-node nodemon @types/node");
@@ -151,11 +151,24 @@ writeFile(
 `
 );
 
+writeFile(
+  "nodemon.json",
+  `{
+  "watch": ["src", "public"],
+  "ext": "*",
+  "exec": "npx tsc && node ./dist/index.js"
+}
+`
+);
+
+
 const pkgPath = "./package.json";
 const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
 pkg.scripts = pkg.scripts || {};
 pkg.scripts.start = "npx tsc && node ./dist/index.js";
+pkg.scripts.dev = "nodemon";
 pkg.type = "module"
 fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
 
-console.log("✅ Setup concluído!");
+console.log("Setup finished!");
+console.log("Setup finished!");

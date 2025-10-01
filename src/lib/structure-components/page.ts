@@ -51,9 +51,7 @@ export class Page implements PageConfig {
      */
     build(): string {
         const styles = this.buildFullCss();
-
-        console.log(styles)
-
+        
         const head = new Widget({
             element: 'head',
             children: [

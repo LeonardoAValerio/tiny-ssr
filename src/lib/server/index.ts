@@ -55,7 +55,7 @@ export class SSRServer implements SSRServerConfig {
     if (url.includes("/.")) {
       return null;
     } else if (url.includes(".")) {
-      return this.publicDir + url;
+      return resolve(this.publicDir, "." + url);
     } else {
       const splitetedUrl = url.split("/");
       splitetedUrl.shift();
@@ -89,7 +89,7 @@ export class SSRServer implements SSRServerConfig {
               console.log(`[ERROR] Unknown public file ${e}`);
             }
           } else {
-            const module = await import(path);
+            const module = await import(`file://${path}`);
             file = module.default as Page;
             file = file.build();
           }
@@ -101,7 +101,7 @@ export class SSRServer implements SSRServerConfig {
           `[ERROR] ${e}\nredirecting to ${this.pagesDir}/404.ts`
         );
         const path = this._factoryPath("/404")!;
-        const module = await import(path);
+        const module = await import(`file://${path}`);
         const file = module.default as Page;
         res.end(file.build());
       }
